@@ -3,7 +3,7 @@ import { useState } from 'react'
 const Button = ({ onClick, text }) =>
 <button onClick={onClick}>{text}</button>
 
-const Display = (props) => <div> {props.name} {props.value} </div>
+const StatisticLine = (props) => <div> {props.text} {props.value} </div>
 
 const Statistics = ({good,neutral,bad}) => {
   if (good === 0 && neutral === 0 && bad === 0) {
@@ -15,18 +15,18 @@ const Statistics = ({good,neutral,bad}) => {
     )
   } else {
   const all = good+bad+neutral
-  const average = all === 0 ? 0 : (good*1+bad*(-1))/all
-  const positive = all === 0 ? 0 : good*100/all
+  const average = (good*1+bad*(-1))/all
+  const positive = good*100/all
 
   return (
     <div>
       <h1>statistics</h1>
-      <Display name = 'good' value = {good} />
-      <Display name = 'neutral' value = {neutral} />
-      <Display name = 'bad' value = {bad} />
-      <Display name = 'all' value = {all}/>
-      <Display name = 'average' value = {average}/>
-      <Display name = 'positive' value = {`${positive} %`} />
+      <StatisticLine text = 'good' value = {good} />
+      <StatisticLine text = 'neutral' value = {neutral} />
+      <StatisticLine text = 'bad' value = {bad} />
+      <StatisticLine text = 'all' value = {all}/>
+      <StatisticLine text = 'average' value = {average}/>
+      <StatisticLine text = 'positive' value = {`${positive} %`} />
     </div>
   )
   }
