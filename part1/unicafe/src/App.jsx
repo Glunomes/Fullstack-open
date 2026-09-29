@@ -6,7 +6,14 @@ const Button = ({ onClick, text }) =>
 const Display = (props) => <div> {props.name} {props.value} </div>
 
 const Statistics = ({good,neutral,bad}) => {
-
+  if (good === 0 && neutral === 0 && bad === 0) {
+    return (
+    <div>
+      <h1>statistics</h1>
+      <p>No feedback given</p>
+    </div>
+    )
+  } else {
   const all = good+bad+neutral
   const average = all === 0 ? 0 : (good*1+bad*(-1))/all
   const positive = all === 0 ? 0 : good*100/all
@@ -22,6 +29,7 @@ const Statistics = ({good,neutral,bad}) => {
       <Display name = 'positive' value = {`${positive} %`} />
     </div>
   )
+  }
 }
 
 const App = () => {
