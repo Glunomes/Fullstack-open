@@ -34,6 +34,11 @@
       "name": "Man Woman",
       "number": "321312321",
       "id": "xvg3NctETHw"
+    },
+    {
+      "name": "Kain Cloin",
+      "number": "321322131",
+      "id": "TREpHs3uluU"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
