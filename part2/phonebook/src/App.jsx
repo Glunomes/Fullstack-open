@@ -8,10 +8,11 @@ const App = () => {
   const [persons, setPersons] = useState([])
 
   useEffect(() => {
-    personsService.getAll()
-          .then(initialPersons => {
-        setPersons(initialPersons)
-      })
+    personsService
+      .getAll()
+      .then(initialPersons => {
+      setPersons(initialPersons)
+    })
   }, [])
 
   const [newName, setNewName] = useState('')
@@ -44,6 +45,16 @@ const App = () => {
     })
   }
 
+  const deletePerson = (person) => {
+    if(window.confirm(`Delete ${person.name}`)) {
+      personsService
+        .deleteP(person.id)
+        .then(() => {        
+          setPersons(persons.filter(p => p.id !== person.id))
+        })
+    }
+  }
+
   const personToShow = persons.filter(person => 
     person.name.toLowerCase().includes(filterName.toLowerCase())
   ) 
@@ -55,7 +66,7 @@ const App = () => {
       <h3>add a new</h3>
       <PersonForm addPerson={addPerson} newName={newName} handleNameChange={handleNameChange} newNumber={newNumber} handleNumberChange={handleNumberChange} />
       <h3>Numbers</h3>
-      <Persons personToShow={personToShow} /> 
+      <Persons personToShow={personToShow} deletePerson={deletePerson} /> 
     </div>
   )
 }
