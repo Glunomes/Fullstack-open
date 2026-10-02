@@ -17,4 +17,10 @@ const deleteP = id => {
   return request.then(response => response.data)
 }
 
-export default { getAll,create,deleteP }
+const updateNumber = (id, updatedPerson) => {
+  const url = `http://localhost:3001/persons/${id}`
+  const request = axios.put(url,updatedPerson)
+  return request.then(response => response.data)
+}
+
+export default { getAll,create,deleteP, updateNumber }

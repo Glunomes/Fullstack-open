@@ -27,7 +27,9 @@ const App = () => {
     event.preventDefault()
     for (let person of persons) {
       if (person.name === newName) {
-        alert(`${newName} is already added to phonebook`)
+        if(window.confirm(`${person.name} is already added to phonebook, replace the old number with a new one?`)) {
+          return updatePerson(person.id)
+        }
         return
       }
     }
@@ -43,6 +45,21 @@ const App = () => {
       setNewName('')
       setNewNumber('')
     })
+  }
+
+  const updatePerson = (id) => {
+    const person = persons.find(p => p.id === id)
+    const changedNumberPerson = {
+      ...person,
+      number: newNumber
+    }
+    personsService
+      .updateNumber(person.id,changedNumberPerson)
+      .then(updatedPerson => {
+      setPersons(persons.map(person => person.id === id ? updatedPerson : person))
+      setNewName('')
+      setNewNumber('')  
+      })
   }
 
   const deletePerson = (person) => {
