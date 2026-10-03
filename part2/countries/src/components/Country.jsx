@@ -1,11 +1,15 @@
+import Weather from "./Weather"
+
 const Country = ({country}) => {
   const languages = country.languages 
   ? Object.values(country.languages)
   : ['Languages are missing']
 
+  const nameOfCountry = country.name.common
+
   return (
     <div>
-      <h1>{country.name.common}</h1>
+      <h1>{nameOfCountry}</h1>
       <p>Capital {country.capital?.join(', ') || 'is not defined'}</p>
       <p>Area {country.area} km²</p>
       <h2>Languages</h2>
@@ -15,8 +19,9 @@ const Country = ({country}) => {
         </li>)}
       </ul>
       <img src={country.flags?.png} 
-      alt={country.flags?.alt || `Flag of ${country.name.common}`} 
+      alt={country.flags?.alt || `Flag of ${nameOfCountry}`} 
       />
+      <Weather country={country} />
     </div>
   )
 }
