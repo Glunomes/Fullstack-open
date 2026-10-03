@@ -25,7 +25,7 @@ function App() {
   return (
   <div>
     <Filter filterName={filterName} handleNameFilter={handleNameFilter} />
-    <Countries filteredCountries={filteredCountries} filterName={filterName} />
+    <Countries filteredCountries={filteredCountries} filterName={filterName} setFilter={setFilter} />
   </div>
   )
 }

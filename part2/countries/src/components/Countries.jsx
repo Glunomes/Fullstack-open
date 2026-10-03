@@ -1,6 +1,6 @@
 import Country from "./Country"
 
-const Countries = ({filteredCountries, filterName}) => {
+const Countries = ({filteredCountries, filterName, setFilter}) => {
   if (!filterName) {
     return <p>Filter is empty, type something</p>
   }
@@ -19,7 +19,10 @@ const Countries = ({filteredCountries, filterName}) => {
     <ul>
       {filteredCountries.map(country => (
         <li key={country.name.common}>
-          {country.name.common}
+          {country.name.common}{' '}
+          <button onClick={() => setFilter(country.name.common)}>
+             Show
+          </button>
         </li>
         ))}
     </ul>
