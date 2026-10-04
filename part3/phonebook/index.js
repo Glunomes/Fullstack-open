@@ -82,22 +82,22 @@ app.post('/api/persons', (request, response) => {
       error : 'name or number is missing'
     })
   }
-  if(persons.some(person => person.name === body.name)) {
+  /*if(persons.some(person => person.name === body.name)) {
     return response.status(400).json ({
       error : 'name must be unique'
     })
-  }
+  }*/
 
-  const person = 
-  {
+  const person = new Person ({
     name: body.name,
     number: body.number,
-    id: generatedId()
-  }
+  })
 
-  persons = persons.concat(person)
-
-  response.json(person)
+  person.save()
+    .then(savedPerson => {
+    response.json(savedPerson)
+  })
+  .catch(error => next(error))
 })
 
 const PORT = process.env.PORT
