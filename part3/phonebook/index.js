@@ -81,11 +81,11 @@ app.post('/api/persons', (request, response, next) => {
       error : 'name or number is missing'
     })
   }
-  /*if(persons.some(person => person.name === body.name)) {
+  if(persons.some(person => person.name === body.name)) {
     return response.status(400).json ({
       error : 'name must be unique'
     })
-  }*/
+  }
 
   const person = new Person ({
     name: body.name,
@@ -97,6 +97,25 @@ app.post('/api/persons', (request, response, next) => {
     response.json(savedPerson)
   })
   .catch(error => next(error))
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+  Person.findById(request.params.id)
+    .then(person => {
+      if(!person) {
+        return response.status(404).end()
+      }
+      
+      person.name = body.name
+      person.number = body.number
+
+      return person.save()
+    })
+    .then(savedPerson => {
+      return response.json(savedPerson)
+    })
+    .catch(error => next(error))
 })
 
 const unknownEndpoint = (request, response) => {
