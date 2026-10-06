@@ -65,4 +65,30 @@ describe('testing HTTP request', () => {
 
     assert.strictEqual(response.body.likes, 0)
   })
+
+  test('blog without title is not added and return error 404', async () => {
+    const newBlog = {
+      author: 'Me1',
+      url: 'mysite1.com',
+      likes: 5
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+  })
+
+  test('blog without url is not added and return error 404', async () => {
+    const newBlog = {
+      title: 'New Blog2',
+      author: 'Me1',
+      likes: 6,
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+  })
 })
