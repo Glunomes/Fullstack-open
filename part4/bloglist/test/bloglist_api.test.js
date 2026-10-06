@@ -49,4 +49,20 @@ describe('testing HTTP request', () => {
     assert.strictEqual(response.body.length, helper.initialBlogs.length + 1)
     assert(titles.includes('Canonical string reduction'))
   })
+
+  test('if "likes" key is missing, default value of this field is 0', async () => {
+    const newBlog = {
+      title: 'New Blog',
+      author: 'Me',
+      url: 'mysite.com'
+    }
+
+    const response = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    assert.strictEqual(response.body.likes, 0)
+  })
 })
