@@ -107,4 +107,21 @@ describe('testing HTTP request', () => {
     const contents = blogsAtEnd.map(b => b.title)
     assert(!contents.includes(blogToDelete.title))
   })
+
+  test('a blog post likes can be updated', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    const updatedLikes = {
+      likes: blogToUpdate.likes + 1,
+    }
+
+    const result = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedLikes)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    assert.strictEqual(result.body.likes, blogToUpdate.likes + 1)
+  })
 })
