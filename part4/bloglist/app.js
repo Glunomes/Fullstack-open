@@ -15,6 +15,7 @@ mongoose.connect(MONGODB_URI, { family: 4 })
   .then(() => console.log('connected to MongoDB'))
   .catch(error => console.error('error connecting to MongoDB:', error.message))
 
+app.use(middleware.tokenExtractor)
 app.use(express.json())
 
 app.use('/api/blogs', blogsRouter)
