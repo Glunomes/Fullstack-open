@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -6,6 +6,7 @@ import Message from './components/Message'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
+import Toggable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -30,7 +31,7 @@ const App = () => {
     setUser(user)
     blogService.setToken(user.token)
   }
-}, [])
+  }, [])
 
   const handleBlog = async event => {
     event.preventDefault()
@@ -79,6 +80,19 @@ const App = () => {
     setUser('')
   }
   
+  const blogFormRef = useRef()
+
+  const blogForm = () => (
+    <Toggable buttonLabel='new Blog' ref={blogFormRef}>
+      <BlogForm 
+      title={title} setTitle={setTitle} 
+      author={author} setAuthor={setAuthor}
+      url={url} setUrl={setUrl} 
+      handleBlog={handleBlog}
+      />
+    </Toggable>
+  )
+
   return (
     <div>
       <Message message={message} />
@@ -92,12 +106,7 @@ const App = () => {
         <div>    
           <p>{user.name} logged in</p>
           <button onClick={() => LogOut()}>Log Out</button>
-          <BlogForm 
-          title={title} setTitle={setTitle} 
-          author={author} setAuthor={setAuthor}
-          url={url} setUrl={setUrl} 
-          handleBlog={handleBlog}
-          />
+          {blogForm()}
           <BlogList blogs={blogs} user={user}/>
         </div>
       )}
