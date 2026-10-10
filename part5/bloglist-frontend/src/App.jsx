@@ -37,12 +37,16 @@ const App = () => {
     try {
       const newBlog = await blogService.create({ title, author, url })
       setBlogs(blogs.concat(newBlog))
+      setMessage({text: `a new blog ${title} by ${author} added!`, type: 'success'})
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)   
       setUrl('')
       setAuthor('')
       setTitle('')
     }
     catch (error){
-      setMessage(error.response.data.error)
+      setMessage({ text: error.response?.data?.error, type: 'error' })
       setTimeout(() => {
         setMessage(null)
       }, 5000)      
@@ -62,8 +66,8 @@ const App = () => {
     setPassword('')
     console.log(`User object:${user}`)
   }
-  catch {
-    setMessage('wrong credential')
+  catch (error) {
+    setMessage({text: error.response?.data?.error || 'wrong credential', type: 'error' })
     setTimeout(() => {
       setMessage(null)
     }, 5000)

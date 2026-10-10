@@ -10,13 +10,27 @@ const Message = ({message}) => {
     borderRadius: '10px'    
   }
 
+  const error = {
+    ...messageStyle,
+    color: 'red',
+    border: '5px solid red',
+  }
+
+  const success = {
+    ...messageStyle,
+    color: 'green',
+    border: '5px solid green',
+  }
+
   if (message === null) {
     return null
   }
 
+  const {text, type} = message
+
   return (
-    <div style={messageStyle}>
-      {message}
+    <div style={type === "success" ? success : error}>
+      {text}
     </div>
   )
 } 
