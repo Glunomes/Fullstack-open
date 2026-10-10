@@ -3,8 +3,8 @@ import { useState, useImperativeHandle } from "react"
 const Toggable = (props) => {
   const [visible, setVisible] = useState(false)
 
-  const hideWhenWisible = { display: visible ? 'none' : '' }
-  const showWhenWisible = { display: visible ? '' : 'none' }
+  const hideWhenVisible = { display: visible ? 'none' : '' }
+  const showWhenVisible = { display: visible ? '' : 'none' }
 
   const toggleVisibility = () => {
     setVisible(!visible)
@@ -16,10 +16,10 @@ const Toggable = (props) => {
   
   return (
     <div>
-      <div style={hideWhenWisible}>
+      <div style={hideWhenVisible}>
         <button onClick={toggleVisibility}>{props.buttonLabel}</button>
       </div>
-      <div style={showWhenWisible}>
+      <div style={showWhenVisible}>
         {props.children}
         <button onClick={toggleVisibility}>cancel</button>
       </div>
