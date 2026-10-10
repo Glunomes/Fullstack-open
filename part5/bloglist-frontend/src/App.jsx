@@ -82,6 +82,15 @@ const App = () => {
     </Toggable>
   )
 
+  const addLike = async (blog) => {
+  const newBlogObject = {
+    ...blog,
+    likes: blog.likes+1
+  }
+  const updatedBlog = await blogService.update(blog.id, newBlogObject)
+  setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
+  }
+
   return (
     <div>
       <Message message={message} />
@@ -96,7 +105,7 @@ const App = () => {
           <p>{user.name} logged in</p>
           <button onClick={() => LogOut()}>Log Out</button>
           {blogForm()}
-          <BlogList blogs={blogs} user={user}/>
+          <BlogList blogs={blogs} user={user} addLike={addLike}/>
         </div>
       )}
     </div>

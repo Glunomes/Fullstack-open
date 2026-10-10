@@ -50,6 +50,9 @@ blogsRouter.put('/:id', async (request, response) => {
   if (!updatedBlog) {
     return response.status(404).end()
   }
+
+  await updatedBlog.populate('user', { username: 1, name: 1 })
+
   response.json(updatedBlog)
 })
 
