@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState } from 'react'
 
 const Blog = ({ blog, addLike, deleteBlog, showDeleteButton }) => {
   const [visibility, setVisibility] = useState(false)
@@ -14,13 +14,13 @@ const Blog = ({ blog, addLike, deleteBlog, showDeleteButton }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-  
+
   return (
     <div style={blogStyle}>
       <div>
         <span>{blog.title} - {blog.author}</span>
         <button onClick={changeVisibility}>
-          {visibility ? "hide" : "show"}
+          {visibility ? 'hide' : 'show'}
         </button>
       </div>
 

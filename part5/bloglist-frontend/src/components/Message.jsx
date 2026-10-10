@@ -1,4 +1,4 @@
-const Message = ({message}) => {
+const Message = ({ message }) => {
   const messageStyle = {
     fontFamily: 'Arial',
     fontWeight: 'bold',
@@ -7,7 +7,7 @@ const Message = ({message}) => {
     margin: '15px',
     marginLeft: '0px',
     padding: '10px',
-    borderRadius: '10px'    
+    borderRadius: '10px'
   }
 
   const error = {
@@ -26,13 +26,13 @@ const Message = ({message}) => {
     return null
   }
 
-  const {text, type} = message
+  const { text, type } = message
 
   return (
-    <div style={type === "success" ? success : error}>
+    <div style={type === 'success' ? success : error}>
       {text}
     </div>
   )
-} 
+}
 
 export default Message

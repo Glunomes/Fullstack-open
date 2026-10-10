@@ -17,16 +17,16 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
-  const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-  if (loggedUserJSON) {
-    const user = JSON.parse(loggedUserJSON)
-    setUser(user)
-    blogService.setToken(user.token)
-  }
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
+    }
   }, [])
 
   const createBlog = async (BlogObject)  => {
@@ -34,16 +34,16 @@ const App = () => {
       const newBlog = await blogService.create(BlogObject)
       setBlogs(blogs.concat(newBlog))
       blogFormRef.current.toggleVisibility()
-      setMessage({text: `a new blog ${newBlog.title} by ${newBlog.author} added!`, type: 'success'})
+      setMessage({ text: `a new blog ${newBlog.title} by ${newBlog.author} added!`, type: 'success' })
       setTimeout(() => {
         setMessage(null)
-      }, 5000)   
+      }, 5000)
     }
     catch (error){
       setMessage({ text: error.response?.data?.error, type: 'error' })
       setTimeout(() => {
         setMessage(null)
-      }, 5000)      
+      }, 5000)
     }
   }
 
@@ -58,36 +58,36 @@ const App = () => {
         setTimeout(() => {
           setMessage(null)
         }, 5000)
-      }           
+      }
     }
   }
 
   const handleLogin = async event => {
-  event.preventDefault()
-  try {
-    const user = await loginService.login({ username, password })
-    window.localStorage.setItem(
-    'loggedBlogappUser', JSON.stringify(user)
-    )
-    blogService.setToken(user.token)
-    setUser(user)
-    setUsername('')
-    setPassword('')
-    console.log(`User object:${user}`)
-  }
-  catch (error) {
-    setMessage({text: error.response?.data?.error || 'wrong credential', type: 'error' })
-    setTimeout(() => {
-      setMessage(null)
-    }, 5000)
-  }
+    event.preventDefault()
+    try {
+      const user = await loginService.login({ username, password })
+      window.localStorage.setItem(
+        'loggedBlogappUser', JSON.stringify(user)
+      )
+      blogService.setToken(user.token)
+      setUser(user)
+      setUsername('')
+      setPassword('')
+      console.log(`User object:${user}`)
+    }
+    catch (error) {
+      setMessage({ text: error.response?.data?.error || 'wrong credential', type: 'error' })
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
+    }
   }
 
   const LogOut = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser('')
   }
-  
+
   const blogFormRef = useRef()
 
   const blogForm = () => (
@@ -97,25 +97,25 @@ const App = () => {
   )
 
   const addLike = async (blog) => {
-  const newBlogObject = {
-    ...blog,
-    likes: blog.likes+1
-  }
-  const updatedBlog = await blogService.update(blog.id, newBlogObject)
-  setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
+    const newBlogObject = {
+      ...blog,
+      likes: blog.likes+1
+    }
+    const updatedBlog = await blogService.update(blog.id, newBlogObject)
+    setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
   }
 
   return (
     <div>
       <Message message={message} />
       {!user && <LoginForm
-      handleLogin={handleLogin} 
-      setUsername={setUsername} username={username} 
-      setPassword={setPassword} password={password} 
+        handleLogin={handleLogin}
+        setUsername={setUsername} username={username}
+        setPassword={setPassword} password={password}
       />}
 
       {user && (
-        <div>    
+        <div>
           <p>{user.name} logged in</p>
           <button onClick={() => LogOut()}>Log Out</button>
           {blogForm()}
