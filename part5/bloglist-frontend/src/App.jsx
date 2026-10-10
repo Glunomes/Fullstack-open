@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Message from './components/Message'
@@ -48,6 +47,21 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      try {
+        await blogService.deleteBlog(blog.id)
+        setBlogs(blogs.filter(b => b.id !== blog.id))
+      }
+      catch(error) {
+        setMessage({ text: error.response?.data?.error, type: 'error' })
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      }           
+    }
+  }
+
   const handleLogin = async event => {
   event.preventDefault()
   try {
@@ -77,7 +91,7 @@ const App = () => {
   const blogFormRef = useRef()
 
   const blogForm = () => (
-    <Toggable buttonLabel='new Blog' ref={blogFormRef}>
+    <Toggable buttonLabel='create new blog' ref={blogFormRef}>
       <BlogForm createBlog={createBlog} />
     </Toggable>
   )
@@ -105,7 +119,7 @@ const App = () => {
           <p>{user.name} logged in</p>
           <button onClick={() => LogOut()}>Log Out</button>
           {blogForm()}
-          <BlogList blogs={blogs} user={user} addLike={addLike}/>
+          <BlogList blogs={blogs} addLike={addLike} deleteBlog={deleteBlog} user={user}/>
         </div>
       )}
     </div>
