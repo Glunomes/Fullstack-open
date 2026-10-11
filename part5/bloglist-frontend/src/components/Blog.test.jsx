@@ -52,3 +52,32 @@ test('show URL and likes fields after pressing the button', async () => {
   expect(screen.getByText('me.com')).toBeDefined()
   expect(screen.getByText('35')).toBeDefined()
 })
+
+test('if likes button clicked twice, the event handler is called twice', async () => {
+
+  const blog = {
+    title: 'How to Become Me',
+    author: 'Me',
+    url: 'me.com',
+    likes: 35,
+    user: {
+      name: 'Not me'
+    }
+  }
+
+  const mockHandler = vi.fn()
+
+
+  render(<Blog blog={blog} addLike={mockHandler}/>)
+
+  const user = userEvent.setup()
+
+  const showButton = screen.getByText('show')
+  await user.click(showButton)
+
+  const likeButton = screen.getByText('like')
+  await user.click(likeButton)
+  await user.click(likeButton)
+
+  expect(mockHandler.mock.calls).toHaveLength(2)
+})
