@@ -8,6 +8,12 @@ const user =
   password: "3123131",
 }
 
+const user2 = {
+  username: "user2",
+  name: "user2",
+  password: "user2",
+}
+
 describe("Blog app", () => {
   beforeEach(async ({ page, request }) => {
     await request.post("http://localhost:3003/api/testing/reset");
@@ -70,4 +76,30 @@ describe('When logged in', () => {
   await page.getByRole('button', { name: 'remove' }).click();
   await expect(page.getByText('testBlog - Blogger')).not.toBeVisible();
   })
-}) 
+
+})
+
+describe('When created and logged in 2 accounts for manipulation',() => {
+  beforeEach(async ({ page, request }) => {
+    await request.post("http://localhost:3003/api/testing/reset");
+    await request.post("http://localhost:3003/api/users", {
+      data: user
+    });
+    await request.post("http://localhost:3003/api/users", {
+      data: user2
+    });
+    await page.goto("http://localhost:5173");
+    await login(page, "Lolik", "3123131");
+  })
+
+  test('only creator can see and delete blog', async ({ page }) => {
+    await createBlog (page, 'testBlog', 'Blogger', 'blog.com')
+    await page.getByRole('button', { name: 'show' }).click();
+    await expect(page.getByText('remove')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Log Out' }).click();
+    await login(page, "user2", "user2");
+
+    await page.getByRole('button', { name: 'show' }).click();
+    await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible();  })
+})
