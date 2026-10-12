@@ -1,4 +1,4 @@
-import Blog from './Blog'
+import Blog from "./Blog";
 
 const BlogList = ({ blogs, addLike, deleteBlog, user }) => {
   return (
@@ -15,10 +15,10 @@ const BlogList = ({ blogs, addLike, deleteBlog, user }) => {
               deleteBlog={deleteBlog}
               showDeleteButton={blog.user?.username === user?.username}
             />
-          )
+          );
         })}
     </div>
-  )
-}
+  );
+};
 
-export default BlogList
+export default BlogList;
