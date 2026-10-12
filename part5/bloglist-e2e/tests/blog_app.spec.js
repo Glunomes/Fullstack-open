@@ -77,6 +77,19 @@ describe('When logged in', () => {
   await expect(page.getByText('testBlog - Blogger')).not.toBeVisible();
   })
 
+  test('blog with most likes appears first', async ({ page }) => {
+    await createBlog(page, 'Blog with zero likes', 'AuthorOne', 'exone.com');
+    await createBlog(page, 'Blog with one like', 'AuthorSec', 'exsec.com');
+
+    const secondBlog = page.locator('.blog').filter({ hasText: 'Blog with one like' });
+    await secondBlog.getByRole('button', { name: 'show' }).click();
+    await secondBlog.getByRole('button', { name: 'like' }).click();
+
+    await expect(secondBlog.getByText('1')).toBeVisible();
+    
+    const firstBlogInList = page.locator('.blog').first();
+    await expect(firstBlogInList).toContainText('Blog with one like');
+  });
 })
 
 describe('When created and logged in 2 accounts for manipulation',() => {
