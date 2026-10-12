@@ -1,5 +1,5 @@
 import { test, expect, beforeEach, describe } from "@playwright/test";
-import { login } from "./helper.js";
+import { login, createBlog } from "./helper.js";
 
 const user = 
 {
@@ -49,12 +49,17 @@ describe('When logged in', () => {
   })
 
   test('a new blog can be created', async ({ page }) => {
-    await page.getByRole("button", { name: "create new blog" }).click();
-    await page.getByLabel("title:").fill('testBlog');
-    await page.getByLabel("author:").fill('Blogger');
-    await page.getByLabel("url:").fill('blog.com');
-    await page.getByRole("button", { name: "create" }).click();
-    await expect(page.getByText("a new blog testBlog by Blogger added!")).toBeVisible();
-    await expect(page.getByText("testBlog - Blogger")).toBeVisible();
+    await createBlog(page, 'testBlog', 'Blogger', 'blog.com')
+    await expect(page.getByText(`a new blog testBlog by Blogger added!`)).toBeVisible();
+    await expect(page.getByText('testBlog - Blogger')).toBeVisible();
+  })
+  
+  test('a blog can be liked', async ({ page }) => {
+  await createBlog(page, 'testBlog', 'Blogger', 'blog.com')
+
+  await page.getByRole('button', { name: 'show' }).click();
+  await page.getByRole('button', { name: 'like' }).click();
+
+  await expect(page.getByText('1')).toBeVisible();
   })
 }) 
