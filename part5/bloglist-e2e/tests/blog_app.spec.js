@@ -1,4 +1,4 @@
-import { test, expect, beforeEach, describe } from ('@playwright/test')
+import { test, expect, beforeEach, describe } from '@playwright/test'
 
 describe('Blog app', () => {
   beforeEach(async ({ page }) => {
