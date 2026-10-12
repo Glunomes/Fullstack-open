@@ -62,4 +62,12 @@ describe('When logged in', () => {
 
   await expect(page.getByText('1')).toBeVisible();
   })
+
+  test('a blog can be deleted', async ({ page }) => {
+  await createBlog(page, 'testBlog', 'Blogger', 'blog.com')
+  await page.getByRole('button', { name: 'show' }).click();
+  page.once('dialog', dialog => dialog.accept());
+  await page.getByRole('button', { name: 'remove' }).click();
+  await expect(page.getByText('testBlog - Blogger')).not.toBeVisible();
+  })
 }) 
