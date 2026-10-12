@@ -1,12 +1,9 @@
-const Filter = ({filterName,handleNameFilter}) => {
+const Filter = ({ filterName, handleNameFilter }) => {
   return (
     <div>
-      filter <input
-      value={filterName}
-      onChange={handleNameFilter}
-      />
+      filter <input value={filterName} onChange={handleNameFilter} />
     </div>
-  )
-}
+  );
+};
 
-export default Filter
+export default Filter;

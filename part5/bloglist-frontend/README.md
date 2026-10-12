@@ -26,10 +26,13 @@ A client-side web application for publishing, discovering, and rating blogs and 
 ## 🚀 Getting Started
 
 ### 1. Start the Backend
+
 The client application requires a running instance of the backend API. Setup and launch instructions can be found in the [Bloglist Backend](https://github.com/Glunomes/Fullstack-open/tree/main/part4/bloglist) repository (defaults to port `3003`).
 
 ### 2. Clone and Install Dependencies
+
 ```bash
 git clone https://github.com/Glunomes/Fullstack-open.git
 cd Fullstack-open/part5/bloglist-frontend
 npm install
+```

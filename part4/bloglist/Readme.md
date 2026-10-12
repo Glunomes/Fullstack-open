@@ -26,7 +26,9 @@ A RESTful API service for publishing, cataloging, and rating blog posts and arti
 ## 🚀 Getting Started
 
 ### 1. Clone and Install Dependencies
+
 ```bash
 git clone https://github.com/Glunomes/Fullstack-open.git
 cd Fullstack-open/part4/bloglist
 npm install
+```
