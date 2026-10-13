@@ -6,6 +6,9 @@ import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import Toggable from './components/Togglable'
+import {
+  Routes, Route, Link, useNavigate
+} from 'react-router-dom'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -26,6 +29,8 @@ const App = () => {
       blogService.setToken(user.token)
     }
   }, [])
+
+  const navigate = useNavigate()
 
   const createBlog = async (BlogObject) => {
     try {
@@ -68,9 +73,9 @@ const App = () => {
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
+      navigate('/')
       setUsername('')
       setPassword('')
-      console.log(`User object:${user}`)
     } catch (error) {
       setMessage({
         text: error.response?.data?.error || 'wrong credential',
@@ -85,6 +90,7 @@ const App = () => {
   const LogOut = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser('')
+    navigate('/')
   }
 
   const blogFormRef = useRef()
@@ -106,6 +112,27 @@ const App = () => {
 
   return (
     <div>
+      <div>
+        <Message message={message} />
+        <Link style={{ padding: 5 }} to="/">blogs</Link>
+        {user && <button onClick={() => LogOut()}>Log Out</button>}
+        {!user &&<Link style={{ padding: 5 }} to="/login">login</Link>}
+      </div>
+      <Routes>
+        <Route path="/" element={<BlogList
+          blogs={blogs}
+          addLike={addLike}
+          deleteBlog={deleteBlog}
+          user={user} />} />
+        <Route path="/login" element={<LoginForm
+          handleLogin={handleLogin}
+          setUsername={setUsername}
+          username={username}
+          setPassword={setPassword}
+          password={password} />} />
+      </Routes>
+    </div>
+    /*<div>
       <Message message={message} />
       {!user && (
         <LoginForm
@@ -130,7 +157,7 @@ const App = () => {
           />
         </div>
       )}
-    </div>
+    </div>*/
   )
 }
 
