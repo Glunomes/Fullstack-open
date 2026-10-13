@@ -37,7 +37,6 @@ const App = () => {
     try {
       const newBlog = await blogService.create(BlogObject)
       setBlogs(blogs.concat(newBlog))
-      blogFormRef.current.toggleVisibility()
       setMessage({
         text: `a new blog ${newBlog.title} by ${newBlog.author} added!`,
         type: 'success',
@@ -51,6 +50,7 @@ const App = () => {
         setMessage(null)
       }, 5000)
     }
+    navigate('/')
   }
 
   const deleteBlog = async (blog) => {
@@ -65,6 +65,7 @@ const App = () => {
         }, 5000)
       }
     }
+    navigate('/')
   }
 
   const handleLogin = async (event) => {
@@ -95,14 +96,6 @@ const App = () => {
     navigate('/')
   }
 
-  const blogFormRef = useRef()
-
-  const blogForm = () => (
-    <Toggable buttonLabel="create new blog" ref={blogFormRef}>
-      <BlogForm createBlog={createBlog} />
-    </Toggable>
-  )
-
   const addLike = async (blog) => {
     const newBlogObject = {
       ...blog,
@@ -117,6 +110,7 @@ const App = () => {
       <div>
         <Message message={message} />
         <Link style={{ padding: 5 }} to="/">blogs</Link>
+        <Link style={{ padding: 5 }} to='/create'>new blog</Link>
         {user && <button onClick={() => LogOut()}>Log Out</button>}
         {!user &&<Link style={{ padding: 5 }} to="/login">login</Link>}
       </div>
@@ -137,6 +131,9 @@ const App = () => {
           addLike={addLike}
           deleteBlog={deleteBlog}
           user={user}
+        />} />
+        <Route path='/create' element={<BlogForm
+          createBlog={createBlog}
         />} />
       </Routes>
     </div>
