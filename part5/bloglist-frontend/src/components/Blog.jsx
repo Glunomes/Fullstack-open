@@ -1,44 +1,29 @@
-import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 
-const Blog = ({ blog, addLike, deleteBlog, showDeleteButton }) => {
-  const [visibility, setVisibility] = useState(false)
+const Blog = ({ blogs, addLike, deleteBlog, user }) => {
+  const id = useParams().id
+  const blog = blogs.find(b => b.id === id)
 
-  const changeVisibility = () => {
-    setVisibility(!visibility)
+  if(!blog) {
+    return <div>loading...</div>
   }
 
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-  }
+  const showDeleteButton = blog.user?.username === user?.username
 
   return (
-    <div style={blogStyle} className='blog'>
-      <div>
-        <span>
-          {blog.title} - {blog.author}
-        </span>
-        <button onClick={changeVisibility}>
-          {visibility ? 'hide' : 'show'}
-        </button>
-      </div>
-
-      {visibility && (
-        <div>
-          <p>{blog.url}</p>
-          <p>
-            {blog.likes}
-            <button onClick={() => addLike(blog)}>like</button>
-          </p>
-          <p>{blog.user?.name}</p>
-          {showDeleteButton ? (
-            <button onClick={() => deleteBlog(blog)}>remove</button>
-          ) : null}
-        </div>
-      )}
+    <div className='blog'>
+      <h2>{blog.author}: {blog.title}</h2>
+      <a href={blog.url}>{blog.url}</a>
+      <p>
+        {blog.likes}
+        {user && (
+          <button onClick={() => addLike(blog)}>like</button>
+        )}
+      </p>
+      <p>Added by {blog.user?.name}</p>
+      {showDeleteButton ? (
+        <button onClick={() => deleteBlog(blog)}>remove</button>
+      ) : null}
     </div>
   )
 }

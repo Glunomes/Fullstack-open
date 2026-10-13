@@ -6,6 +6,7 @@ import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import Toggable from './components/Togglable'
+import Blog from './components/Blog'
 import {
   Routes, Route, Link, useNavigate
 } from 'react-router-dom'
@@ -131,6 +132,12 @@ const App = () => {
           username={username}
           setPassword={setPassword}
           password={password} />} />
+        <Route path='/blogs/:id' element={<Blog
+          blogs={blogs}
+          addLike={addLike}
+          deleteBlog={deleteBlog}
+          user={user}
+        />} />
       </Routes>
     </div>
     /*<div>
