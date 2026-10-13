@@ -21,6 +21,7 @@ describe("Blog app", () => {
       data: user
     });
     await page.goto("http://localhost:5173");
+    await page.getByRole('link', { name: 'login' }).click()
   });
 
   test("Login form is shown", async ({ page }) => {
@@ -51,68 +52,79 @@ describe('When logged in', () => {
       data: user
     });
     await page.goto("http://localhost:5173");
+    await page.getByRole('link', { name: 'login' }).click()
     await login(page, "Lolik", "3123131");
+    await expect(page.getByRole("button", { name: "Log Out" })).toBeVisible();
   })
 
   test('a new blog can be created', async ({ page }) => {
     await createBlog(page, 'testBlog', 'Blogger', 'blog.com')
-    await expect(page.getByText(`a new blog testBlog by Blogger added!`)).toBeVisible();
-    await expect(page.getByText('testBlog - Blogger')).toBeVisible();
+    await expect(page.getByText('a new blog testBlog by Blogger added!')).toBeVisible();
+    await expect(page.getByRole('link', {name: 'testBlog by Blogger' })).toBeVisible();
   })
   
   test('a blog can be liked', async ({ page }) => {
-  await createBlog(page, 'testBlog', 'Blogger', 'blog.com')
-
-  await page.getByRole('button', { name: 'show' }).click();
-  await page.getByRole('button', { name: 'like' }).click();
-
-  await expect(page.getByText('1')).toBeVisible();
+    await createBlog(page, 'testBlog', 'Blogger', 'blog.com')
+    await page.getByRole('link', { name: 'testBlog by Blogger' }).click()
+    await page.getByRole('button', { name: 'like' }).click();
+    await expect(page.getByText('1')).toBeVisible();
   })
 
   test('a blog can be deleted', async ({ page }) => {
-  await createBlog(page, 'testBlog', 'Blogger', 'blog.com')
-  await page.getByRole('button', { name: 'show' }).click();
-  page.once('dialog', dialog => dialog.accept());
-  await page.getByRole('button', { name: 'remove' }).click();
-  await expect(page.getByText('testBlog - Blogger')).not.toBeVisible();
+    await createBlog(page, 'testBlog', 'Blogger', 'blog.com')
+    await page.getByRole('link', { name: 'testBlog by Blogger' }).click()
+    await expect(page.getByText('Blogger: testBlog')).toBeVisible();
+
+    page.once('dialog', dialog => dialog.accept())
+    await page.getByRole('button', { name: 'remove' }).click()
+
+    await expect(page.getByText('blogs')).toBeVisible()
+    await expect(page.getByRole('link', {name: 'testBlog by Blogger' })).not.toBeVisible();
   })
 
   test('blog with most likes appears first', async ({ page }) => {
     await createBlog(page, 'Blog with zero likes', 'AuthorOne', 'exone.com');
+
     await createBlog(page, 'Blog with one like', 'AuthorSec', 'exsec.com');
 
-    const secondBlog = page.locator('.blog').filter({ hasText: 'Blog with one like' });
-    await secondBlog.getByRole('button', { name: 'show' }).click();
-    await secondBlog.getByRole('button', { name: 'like' }).click();
+    await page.getByRole('link', { name: 'Blog with one like by AuthorSec' }).click();
+    await page.getByRole('button', { name: 'like' }).click();
+    await expect(page.getByText('1')).toBeVisible();
 
-    await expect(secondBlog.getByText('1')).toBeVisible();
-    
-    const firstBlogInList = page.locator('.blog').first();
+    await page.getByRole('link', { name: 'blogs' }).click();
+    await expect(page.getByRole('heading', { name: 'blogs' })).toBeVisible();
+
+    const firstBlogInList = page.locator('li').first();
     await expect(firstBlogInList).toContainText('Blog with one like');
   });
 })
 
-describe('When created and logged in 2 accounts for manipulation',() => {
+describe('When created and logged in 2 accounts for manipulation', () => {
   beforeEach(async ({ page, request }) => {
-    await request.post("http://localhost:3003/api/testing/reset");
-    await request.post("http://localhost:3003/api/users", {
-      data: user
-    });
-    await request.post("http://localhost:3003/api/users", {
-      data: user2
-    });
-    await page.goto("http://localhost:5173");
-    await login(page, "Lolik", "3123131");
+    await request.post('http://localhost:3003/api/testing/reset')
+    await request.post('http://localhost:3003/api/users', { data: user })
+    await request.post('http://localhost:3003/api/users', { data: user2 })
+
+    await page.goto('http://localhost:5173')
+    await page.getByRole('link', { name: 'login' }).click()
+    await login(page, 'Lolik', '3123131')
+    await expect(page.getByRole("button", { name: "Log Out" })).toBeVisible();
   })
 
   test('only creator can see and delete blog', async ({ page }) => {
-    await createBlog (page, 'testBlog', 'Blogger', 'blog.com')
-    await page.getByRole('button', { name: 'show' }).click();
-    await expect(page.getByText('remove')).toBeVisible();
+    await createBlog(page, 'testBlog', 'Blogger', 'blog.com')
 
-    await page.getByRole('button', { name: 'Log Out' }).click();
-    await login(page, "user2", "user2");
+    await page.getByRole('link', { name: 'testBlog by Blogger' }).click()
+    await expect(page.getByRole('button', { name: 'remove' })).toBeVisible()
 
-    await page.getByRole('button', { name: 'show' }).click();
-    await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible();  })
+    await page.getByRole('button', { name: 'Log Out' }).click()
+
+    await page.getByRole('link', { name: 'login' }).click()
+    await login(page, 'user2', 'user2')
+    await expect(page.getByRole("button", { name: "Log Out" })).toBeVisible();
+
+    await page.getByRole('link', { name: 'testBlog by Blogger' }).click()
+
+    await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+  })
 })

@@ -76,9 +76,15 @@ const App = () => {
       blogService.setToken(user.token)
       setUser(user)
       navigate('/')
+      setMessage({
+        text: `${user.name} logged in`,
+        type: 'success'
+      })
+      setTimeout(() => {
+        setMessage(null)
+      }, 5000)
       setUsername('')
       setPassword('')
-      console.log(`User object:${user}`)
     } catch {
       setMessage({
         text: 'wrong credentials',
