@@ -16,7 +16,7 @@ const Blog = ({ blog, addLike, deleteBlog, showDeleteButton }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       <div>
         <span>
           {blog.title} - {blog.author}

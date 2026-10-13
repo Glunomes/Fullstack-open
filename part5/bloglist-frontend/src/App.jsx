@@ -76,9 +76,10 @@ const App = () => {
       navigate('/')
       setUsername('')
       setPassword('')
-    } catch (error) {
+      console.log(`User object:${user}`)
+    } catch {
       setMessage({
-        text: error.response?.data?.error || 'wrong credential',
+        text: 'wrong credentials',
         type: 'error',
       })
       setTimeout(() => {
