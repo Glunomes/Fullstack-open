@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Box, Button, Link as MuiLink } from '@mui/material'
-import {
-  Routes, Route, Link as RouterLink, useNavigate
-} from 'react-router-dom'
+import { AppBar, Toolbar, Typography, Button, Container, Box, } from '@mui/material'
+import { Routes, Route, Link as RouterLink, useNavigate } from 'react-router-dom'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -113,28 +111,40 @@ const App = () => {
   }
 
   return (
-    <Box sx={{ pt: 1, pl: 4, pr: 4, pb: 4 }}>
-      <Message message={message} />
+    <Container maxWidth="lg" sx={{ mt: 2 }}>
+      <AppBar position="static" sx={{ borderRadius: 1 }}>
+        <Toolbar>
+          <Typography
+            variant="h5"
+            component="div"
+            sx={{ flexGrow: 1, fontWeight: 500 }}
+          >
+            Blog App
+          </Typography>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-        <MuiLink component={RouterLink} to="/" underline="always" color="secondary">
-          blogs
-        </MuiLink>
-        {user && (
-          <MuiLink component={RouterLink} to="/create" underline="always" color="secondary">
-            new blog
-          </MuiLink>
-        )}
-        {!user && (
-          <MuiLink component={RouterLink} to="/login" underline="always" color="secondary">
-            login
-          </MuiLink>
-        )}
-        {user && (
-          <Button size="small" variant="outlined" onClick={LogOut}>
-            Log Out
+          <Button color="inherit" component={RouterLink} to="/">
+            blogs
           </Button>
-        )}
+
+          {user ? (
+            <>
+              <Button color="inherit" component={RouterLink} to="/create">
+                new blog
+              </Button>
+              <Button color="inherit" onClick={LogOut}>
+                logout
+              </Button>
+            </>
+          ) : (
+            <Button color="inherit" component={RouterLink} to="/login">
+              login
+            </Button>
+          )}
+        </Toolbar>
+      </AppBar>
+
+      <Box sx={{ mt: 2 }}>
+        <Message message={message} />
       </Box>
 
       <Routes>
@@ -177,7 +187,7 @@ const App = () => {
           element={<BlogForm createBlog={createBlog} />}
         />
       </Routes>
-    </Box>
+    </Container>
   )
 }
 
