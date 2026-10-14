@@ -116,8 +116,8 @@ const App = () => {
       <div>
         <Message message={message} />
         <Link style={{ padding: 5 }} to="/">blogs</Link>
-        <Link style={{ padding: 5 }} to='/create'>new blog</Link>
-        {user && <button onClick={() => LogOut()}>Log Out</button>}
+        {user && <Link style={{ padding: 5 }} to='/create'>new blog</Link>}
+        {user && <button style={{ padding: 5 }} onClick={() => LogOut()}>Log Out</button>}
         {!user &&<Link style={{ padding: 5 }} to="/login">login</Link>}
       </div>
       <Routes>
