@@ -1,15 +1,16 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
+import { Box, Button, Link as MuiLink } from '@mui/material'
+import {
+  Routes, Route, Link as RouterLink, useNavigate
+} from 'react-router-dom'
+
 import blogService from './services/blogs'
 import loginService from './services/login'
 import Message from './components/Message'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
-import Toggable from './components/Togglable'
 import Blog from './components/Blog'
-import {
-  Routes, Route, Link, useNavigate
-} from 'react-router-dom'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -112,63 +113,71 @@ const App = () => {
   }
 
   return (
-    <div>
-      <div>
-        <Message message={message} />
-        <Link style={{ padding: 5 }} to="/">blogs</Link>
-        {user && <Link style={{ padding: 5 }} to='/create'>new blog</Link>}
-        {user && <button style={{ padding: 5 }} onClick={() => LogOut()}>Log Out</button>}
-        {!user &&<Link style={{ padding: 5 }} to="/login">login</Link>}
-      </div>
-      <Routes>
-        <Route path="/" element={<BlogList
-          blogs={blogs}
-          addLike={addLike}
-          deleteBlog={deleteBlog}
-          user={user} />} />
-        <Route path="/login" element={<LoginForm
-          handleLogin={handleLogin}
-          setUsername={setUsername}
-          username={username}
-          setPassword={setPassword}
-          password={password} />} />
-        <Route path='/blogs/:id' element={<Blog
-          blogs={blogs}
-          addLike={addLike}
-          deleteBlog={deleteBlog}
-          user={user}
-        />} />
-        <Route path='/create' element={<BlogForm
-          createBlog={createBlog}
-        />} />
-      </Routes>
-    </div>
-    /*<div>
+    <Box sx={{ pt: 1, pl: 4, pr: 4, pb: 4 }}>
       <Message message={message} />
-      {!user && (
-        <LoginForm
-          handleLogin={handleLogin}
-          setUsername={setUsername}
-          username={username}
-          setPassword={setPassword}
-          password={password}
-        />
-      )}
 
-      {user && (
-        <div>
-          <p>{user.name} logged in</p>
-          <button onClick={() => LogOut()}>Log Out</button>
-          {blogForm()}
-          <BlogList
-            blogs={blogs}
-            addLike={addLike}
-            deleteBlog={deleteBlog}
-            user={user}
-          />
-        </div>
-      )}
-    </div>*/
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
+        <MuiLink component={RouterLink} to="/" underline="always" color="secondary">
+          blogs
+        </MuiLink>
+        {user && (
+          <MuiLink component={RouterLink} to="/create" underline="always" color="secondary">
+            new blog
+          </MuiLink>
+        )}
+        {!user && (
+          <MuiLink component={RouterLink} to="/login" underline="always" color="secondary">
+            login
+          </MuiLink>
+        )}
+        {user && (
+          <Button size="small" variant="outlined" onClick={LogOut}>
+            Log Out
+          </Button>
+        )}
+      </Box>
+
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <BlogList
+              blogs={blogs}
+              addLike={addLike}
+              deleteBlog={deleteBlog}
+              user={user}
+            />
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <LoginForm
+              handleLogin={handleLogin}
+              setUsername={setUsername}
+              username={username}
+              setPassword={setPassword}
+              password={password}
+            />
+          }
+        />
+        <Route
+          path="/blogs/:id"
+          element={
+            <Blog
+              blogs={blogs}
+              addLike={addLike}
+              deleteBlog={deleteBlog}
+              user={user}
+            />
+          }
+        />
+        <Route
+          path="/create"
+          element={<BlogForm createBlog={createBlog} />}
+        />
+      </Routes>
+    </Box>
   )
 }
 
