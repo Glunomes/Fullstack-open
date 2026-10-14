@@ -63,6 +63,22 @@ describe('When logged in', () => {
     await expect(page.getByRole('link', {name: 'testBlog by Blogger' })).toBeVisible();
   })
   
+  test('Unauthenticated user can see bloglist, can`t see like and remove button', async ({ page }) => {
+    await createBlog(page, 'testBlog', 'Blogger', 'blog.com')
+    await expect(page.getByText('a new blog testBlog by Blogger added!')).toBeVisible();
+
+    await page.getByRole("button", { name: "Log Out" }).click();
+    await expect(page.getByRole('link', { name: 'login' })).toBeVisible()
+
+    await page.getByRole('link', { name: 'testBlog by Blogger' }).click()
+    await expect(page.getByText('Blogger: testBlog')).toBeVisible();
+    await expect(page.getByText('blog.com')).toBeVisible();
+    await expect(page.getByText('Added by Andrew')).toBeVisible();
+    await expect(page.getByRole('button', { name: 'like' })).not.toBeVisible()
+    await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+
+  })
+  
   test('a blog can be liked', async ({ page }) => {
     await createBlog(page, 'testBlog', 'Blogger', 'blog.com')
     await page.getByRole('link', { name: 'testBlog by Blogger' }).click()
@@ -111,11 +127,12 @@ describe('When created and logged in 2 accounts for manipulation', () => {
     await expect(page.getByRole("button", { name: "Log Out" })).toBeVisible();
   })
 
-  test('only creator can see and delete blog', async ({ page }) => {
+  test('only creator of blog can see delete and like button', async ({ page }) => {
     await createBlog(page, 'testBlog', 'Blogger', 'blog.com')
 
     await page.getByRole('link', { name: 'testBlog by Blogger' }).click()
     await expect(page.getByRole('button', { name: 'remove' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'like' })).toBeVisible()
 
     await page.getByRole('button', { name: 'Log Out' }).click()
 
@@ -126,5 +143,7 @@ describe('When created and logged in 2 accounts for manipulation', () => {
     await page.getByRole('link', { name: 'testBlog by Blogger' }).click()
 
     await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+    await expect(page.getByRole('button', { name: 'like' })).not.toBeVisible()
   })
 })
+
