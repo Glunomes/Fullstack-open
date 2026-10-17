@@ -5,17 +5,18 @@ import { useBlogs } from './hooks/useBlogs'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
-import Message from './components/Message'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import Blog from './components/Blog'
+import useNotification from './hooks/useNotification'
+import Notification from './components/Notification'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState('')
-  const [message, setMessage] = useState(null)
+  const { setNotification } = useNotification()
 
   const { blogs, isPending, isError, addBlog, updateVote, deleteBlog } = useBlogs()
 
@@ -42,20 +43,14 @@ const App = () => {
 
     addBlog(BlogObject, {
       onSuccess: (createdBlog) => {
-        setMessage({
+        setNotification({
           text: `a new blog ${createdBlog.title} by ${createdBlog.author} added!`,
           type: 'success',
         })
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000)
         navigate('/')
       },
       onError: (error) => {
-        setMessage({ text: error.message, type: 'error' })
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000)
+        setNotification({ text: error.message, type: 'error' })
       }
     })
   }
@@ -64,20 +59,14 @@ const App = () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       deleteBlog(blog.id, {
         onSuccess: () => {
-          setMessage({
+          setNotification({
             text: `blog ${blog.title} has been deleted`,
             type: 'success'
           })
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000)
           navigate('/')
         },
         onError: (error) => {
-          setMessage({ text: error.message, type: 'error' })
-          setTimeout(() => {
-            setMessage(null)
-          }, 5000)
+          setNotification({ text: error.message, type: 'error' })
         }
       })
     }
@@ -91,23 +80,17 @@ const App = () => {
       blogService.setToken(user.token)
       setUser(user)
       navigate('/')
-      setMessage({
+      setNotification({
         text: `${user.name} logged in`,
         type: 'success'
       })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
       setUsername('')
       setPassword('')
     } catch {
-      setMessage({
+      setNotification({
         text: 'wrong credentials',
         type: 'error',
       })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
     }
   }
 
@@ -120,19 +103,13 @@ const App = () => {
   const addLike = (blog) => {
     updateVote(blog, {
       onSuccess: (updatedBlog) => {
-        setMessage({
+        setNotification({
           text: `blog ${updatedBlog.title} by ${updatedBlog.author} was liked!`,
           type: 'success',
         })
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000)
       },
       onError: (error) => {
-        setMessage({ text: error.message, type: 'error' })
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000)
+        setNotification({ text: error.message, type: 'error' })
       }
     })
   }
@@ -171,7 +148,7 @@ const App = () => {
       </AppBar>
 
       <Box sx={{ mt: 2 }}>
-        <Message message={message} />
+        <Notification/>
       </Box>
 
       <Routes>
