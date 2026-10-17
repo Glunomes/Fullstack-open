@@ -5,10 +5,6 @@ const Blog = ({ blogs, addLike, deleteBlog, user }) => {
   const id = useParams().id
   const blog = blogs.find((b) => b.id === id)
 
-  if (!blog) {
-    return <div>loading...</div>
-  }
-
   const showDeleteButton = blog.user?.username === user?.username
 
   return (

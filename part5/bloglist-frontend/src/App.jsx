@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { AppBar, Toolbar, Typography, Button, Container, Box, } from '@mui/material'
 import { Routes, Route, Link as RouterLink, useNavigate } from 'react-router-dom'
+import { useBlogs } from './hooks/useBlogs'
 
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -11,15 +12,12 @@ import BlogForm from './components/BlogForm'
 import Blog from './components/Blog'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState('')
   const [message, setMessage] = useState(null)
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+  const { blogs, isPending, isError, addBlog, updateVote, deleteBlog } = useBlogs()
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -32,39 +30,57 @@ const App = () => {
 
   const navigate = useNavigate()
 
-  const createBlog = async (BlogObject) => {
-    try {
-      const newBlog = await blogService.create(BlogObject)
-      setBlogs(blogs.concat(newBlog))
-      setMessage({
-        text: `a new blog ${newBlog.title} by ${newBlog.author} added!`,
-        type: 'success',
-      })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-    } catch (error) {
-      setMessage({ text: error.response?.data?.error, type: 'error' })
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-    }
-    navigate('/')
+  if(isPending) {
+    return <div>loading data...</div>
   }
 
-  const deleteBlog = async (blog) => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-      try {
-        await blogService.deleteBlog(blog.id)
-        setBlogs(blogs.filter((b) => b.id !== blog.id))
-      } catch (error) {
-        setMessage({ text: error.response?.data?.error, type: 'error' })
+  if(isError) {
+    return <div>blog service not available due to problems in server</div>
+  }
+
+  const createBlog = (BlogObject) => {
+
+    addBlog(BlogObject, {
+      onSuccess: (createdBlog) => {
+        setMessage({
+          text: `a new blog ${createdBlog.title} by ${createdBlog.author} added!`,
+          type: 'success',
+        })
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+        navigate('/')
+      },
+      onError: (error) => {
+        setMessage({ text: error.message, type: 'error' })
         setTimeout(() => {
           setMessage(null)
         }, 5000)
       }
+    })
+  }
+
+  const handleDeleteBlog = async (blog) => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      deleteBlog(blog.id, {
+        onSuccess: () => {
+          setMessage({
+            text: `blog ${blog.title} has been deleted`,
+            type: 'success'
+          })
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+          navigate('/')
+        },
+        onError: (error) => {
+          setMessage({ text: error.message, type: 'error' })
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        }
+      })
     }
-    navigate('/')
   }
 
   const handleLogin = async (event) => {
@@ -101,13 +117,24 @@ const App = () => {
     navigate('/')
   }
 
-  const addLike = async (blog) => {
-    const newBlogObject = {
-      ...blog,
-      likes: blog.likes + 1,
-    }
-    const updatedBlog = await blogService.update(blog.id, newBlogObject)
-    setBlogs(blogs.map((b) => (b.id === blog.id ? updatedBlog : b)))
+  const addLike = (blog) => {
+    updateVote(blog, {
+      onSuccess: (updatedBlog) => {
+        setMessage({
+          text: `blog ${updatedBlog.title} by ${updatedBlog.author} was liked!`,
+          type: 'success',
+        })
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      },
+      onError: (error) => {
+        setMessage({ text: error.message, type: 'error' })
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      }
+    })
   }
 
   return (
@@ -151,12 +178,7 @@ const App = () => {
         <Route
           path="/"
           element={
-            <BlogList
-              blogs={blogs}
-              addLike={addLike}
-              deleteBlog={deleteBlog}
-              user={user}
-            />
+            <BlogList/>
           }
         />
         <Route
@@ -177,7 +199,7 @@ const App = () => {
             <Blog
               blogs={blogs}
               addLike={addLike}
-              deleteBlog={deleteBlog}
+              deleteBlog={handleDeleteBlog}
               user={user}
             />
           }
